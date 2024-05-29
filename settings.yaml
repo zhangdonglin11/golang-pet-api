@@ -1,0 +1,43 @@
+# 项目启动端口
+server:
+  address: 127.0.0.1:8088
+  # debug模式
+#  model: debug
+  # release模式
+  model: release
+
+# 数据库配置
+db:
+  dialects: mysql
+  host: 127.0.0.1
+  port: 3306
+  db: golang_pet_db
+  username: root
+  password: 123456
+  charset: utf8mb4
+  # 最大空闲数
+  maxIdle: 50
+  # 最大连接数
+  maxOpen: 150
+  timeout: 10s
+
+# redis配置
+redis:
+  address: 127.0.0.1:6379
+  password: 
+
+# 图片地址配置
+imageSettings:
+  # 本地图片地址
+  uploadDir: /static/imageUtils/
+  # 本地ip地址
+  imageHost: http://localhost:8088
+
+# 系统信息
+system:
+  billboard: "在网络上与他人交流时，要保持礼貌和尊重。避免使用侮辱、攻击或恶意诋毁的言辞,拒绝传播违法、暴力、色情等不良信息，共同营造一个健康、积极的网络环境"
+
+rabbitMQ:
+  exchange: x-delayed-message
+  queue: tempImag_delay_queue
+  routingKey: log_delay
