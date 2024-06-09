@@ -48,7 +48,7 @@ settings.yaml                 项目配置文件
 1. 将项目克隆到本地
 
    ```
-   git clone https://github.com/JasonZhang1124/golang_pet_api.git
+   git clone https://github.com/zhangdonglin11/golang_pet_api.git
    ```
 
 2. 在项目中初始化所需的依赖
