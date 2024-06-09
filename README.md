@@ -69,28 +69,28 @@ settings.yaml                 项目配置文件
 
 #### 小程序端效果展示
 
-   ![](https://github.com/JasonZhang1124/golang-pet-api/blob/main/img/index.png)
+   ![](https://github.com/zhangdonglin11/golang-pet-api/blob/main/img/index.png)
 
-   ![](https://github.com/JasonZhang1124/golang-pet-api/blob/main/img/topic.png)
+   ![](https://github.com/zhangdonglin11/golang-pet-api/blob/main/img/topic.png)
 
-   ![](https://github.com/JasonZhang1124/golang-pet-api/blob/main/img/topicAdd.png)
+   ![](https://github.com/zhangdonglin11/golang-pet-api/blob/main/img/topicAdd.png)
 
-   ![](https://github.com/JasonZhang1124/golang-pet-api/blob/main/img/message.png)
+   ![](https://github.com/zhangdonglin11/golang-pet-api/blob/main/img/message.png)
 
-   ![](https://github.com/JasonZhang1124/golang-pet-api/blob/main/img/messageDetail.png)
+   ![](https://github.com/zhangdonglin11/golang-pet-api/blob/main/img/messageDetail.png)
 
-   ![](https://github.com/JasonZhang1124/golang-pet-api/blob/main/img/user.png)
+   ![](https://github.com/zhangdonglin11/golang-pet-api/blob/main/img/user.png)
 
-   ![](https://github.com/JasonZhang1124/golang-pet-api/blob/main/img/userUpdate.png)
+   ![](https://github.com/zhangdonglin11/golang-pet-api/blob/main/img/userUpdate.png)
 
-   ![](https://github.com/JasonZhang1124/golang-pet-api/blob/main/img/petDetail.png)
+   ![](https://github.com/zhangdonglin11/golang-pet-api/blob/main/img/petDetail.png)
 
-   ![](https://github.com/JasonZhang1124/golang-pet-api/blob/main/img/petAdd.png)
+   ![](https://github.com/zhangdonglin11/golang-pet-api/blob/main/img/petAdd.png)
 
 #### 后台管理效果展示
 
-   ![](https://github.com/JasonZhang1124/golang-pet-api/blob/main/img/adminIndex.png)
+   ![](https://github.com/zhangdonglin11/golang-pet-api/blob/main/img/adminIndex.png)
 
-   ![](https://github.com/JasonZhang1124/golang-pet-api/blob/main/img/adminPet.png)
+   ![](https://github.com/zhangdonglin11/golang-pet-api/blob/main/img/adminPet.png)
    
-   ![](https://github.com/JasonZhang1124/golang-pet-api/blob/main/img/adminUser.png)
+   ![](https://github.com/zhangdonglin11/golang-pet-api/blob/main/img/adminUser.png)
