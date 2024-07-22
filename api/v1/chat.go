@@ -103,13 +103,13 @@ func GetChatList(ctx *gin.Context) {
 
 // WsHandler godoc
 // @Summary 建立websocket连接
-// @Description 使用postman或apifox等接口软件使用websocket进行接口测试，根据目标用户id建立聊天长连接：[ws] ws://127.0.0.1:8088/api/v1/chat/wx?uid=2
+// @Description 使用postman或apifox等接口软件使用websocket进行接口测试，根据目标用户id建立聊天长连接：[ws] ws://127.0.0.1:8088/api/v1/chat/wx?uid=2 json请求体Type：1发送消息，2获取历史，3获取未读；Content：消息内容；Media：// 1: text, 2: image, 3: 表情
 // @Tags 聊天模块
 // @Produce json
 // @Security ApiKeyAuth
 // @Param token header string false "Bearer Token" default(Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM)
-// @Param id query string false "目标用户id"
-// @Param commentForm body forms.CommentForm true "评论表单"
+// @Param toUid query string false "目标用户id"
+// @Param sendMsg body forms.SendMsg true "websocket请求消息体"
 // @Success 200 {string} json{Code,Msg,Data}  "成功"
 // @Router /api/v1/chat/wx [get]
 func WsHandler(c *gin.Context) {
@@ -264,12 +264,15 @@ func (c *Client) Read(ctx *gin.Context) {
 			}
 		} else if sendMsg.Type == 3 { // 获取未读信息
 			timeT, err := time.Parse(time.RFC3339Nano, sendMsg.Content) // 传送来时间
-			unRead := 0                                                 //未读条数
+			unRead := 0
+			var chatList model.ChatList
+			global.Db.Debug().Where("chat_id=?", c.ID).First(&chatList) //未读条数
 			if err != nil {
-				var chatList model.ChatList
-				global.Db.Debug().Where("chat_id=?", c.ID).First(&chatList)
 				unRead = chatList.UnRead
 			}
+			chatList.UnRead = 0
+			global.Db.Save(&chatList) //聊天关系表的未读清零
+
 			results, err := model.ChatMessage{}.QueryUnreadMessagesBeforeTime(c.ID, c.SendID, timeT, unRead)
 			if err != nil {
 				log.Println(err)

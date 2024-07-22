@@ -77,7 +77,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "使用postman或apifox等接口软件使用websocket进行接口测试，根据目标用户id建立聊天长连接：[ws] ws://127.0.0.1:8088/api/v1/chat/wx?uid=2",
+                "description": "使用postman或apifox等接口软件使用websocket进行接口测试，根据目标用户id建立聊天长连接：[ws] ws://127.0.0.1:8088/api/v1/chat/wx?uid=2 json请求体Type：1发送消息，2获取历史，3获取未读；Content：消息内容；Media：// 1: text, 2: image, 3: 表情",
                 "produces": [
                     "application/json"
                 ],
@@ -96,16 +96,16 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "目标用户id",
-                        "name": "id",
+                        "name": "toUid",
                         "in": "query"
                     },
                     {
-                        "description": "评论表单",
-                        "name": "commentForm",
+                        "description": "websocket请求消息体",
+                        "name": "sendMsg",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/forms.CommentForm"
+                            "$ref": "#/definitions/forms.SendMsg"
                         }
                     }
                 ],
@@ -1125,6 +1125,27 @@ const docTemplate = `{
                 },
                 "targetId": {
                     "description": "目标用户id",
+                    "type": "integer"
+                }
+            }
+        },
+        "forms.SendMsg": {
+            "type": "object",
+            "required": [
+                "content",
+                "media",
+                "type"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "media": {
+                    "description": "1: text, 2: image, 3: 表情",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "1:发送信息 2：获取聊天记录 3：获取未读消息",
                     "type": "integer"
                 }
             }
