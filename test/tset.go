@@ -1,9 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
-	fmt.Println(createId(11.12, "22"))
+	fmt.Println(time.Now())
 }
 func createId(uid, toUid interface{}) string {
 	sprintf := fmt.Sprintf("%v->%v", uid, toUid)

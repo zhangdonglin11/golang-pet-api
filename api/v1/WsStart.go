@@ -70,11 +70,10 @@ func (manager *ClientManager) Start() {
 				close(conn.Send)
 				delete(Manager.Clients, conn.ID)
 			}
-		//广播信息
+		//广播信息 在连接池中查找接收者
 		case broadcast := <-Manager.Broadcast:
 			message := broadcast.Message
 			sendId := broadcast.Client.SendID
-
 			flag := false // 默认对方不在线
 			//if conn, ok := Manager.Clients[sendId]; ok {
 			//	select {
@@ -98,33 +97,29 @@ func (manager *ClientManager) Start() {
 				}
 			}
 
-			id := broadcast.Client.ID
+			// 将广播中的信息体解析
 			replyMsg := &forms.ReplyMsg{}
 			_ = json.Unmarshal(message, &replyMsg)
 
 			if flag {
-				log.Println("对方在线应答")
 				replyMsg.Code = e.WebsocketOnlineReply
-				replyMsg.Msg = "对方在线应答"
+				replyMsg.Msg = "对方在线"
 				msg, err := json.Marshal(replyMsg)
 				_ = broadcast.Client.Socket.WriteMessage(websocket.TextMessage, msg)
-				//将消息保存数据库中
-				chatMessage := model.ChatMessage{
-					ChatId:  id,
-					Media:   replyMsg.Media,
-					Content: replyMsg.Content,
-				}
-				global.Db.Create(&chatMessage)
 				if err != nil {
 					fmt.Println("InsertOneMsg Err", err)
 				}
 			} else {
-				log.Println("对方不在线")
+				// 未读数加一
+				var chatList model.ChatList
+				global.Db.Where("chat_id=?", sendId).First(&chatList)
+				chatList.UnRead += 1
+				global.Db.Save(&chatList)
+
 				replyMsg.Code = e.WebsocketOfflineReply
-				replyMsg.Msg = "对方不在线应答"
+				replyMsg.Msg = "对方不在线"
 				msg, err := json.Marshal(replyMsg)
 				_ = broadcast.Client.Socket.WriteMessage(websocket.TextMessage, msg)
-				//将消息保存数据库中
 				if err != nil {
 					fmt.Println("InsertOneMsg Err", err)
 				}

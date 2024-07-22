@@ -97,7 +97,16 @@ const docTemplate = `{
                         "type": "string",
                         "description": "目标用户id",
                         "name": "id",
-                        "in": "path"
+                        "in": "query"
+                    },
+                    {
+                        "description": "评论表单",
+                        "name": "commentForm",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.CommentForm"
+                        }
                     }
                 ],
                 "responses": {

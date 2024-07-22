@@ -83,7 +83,7 @@ func InitRouter() *gin.Engine {
 		// 创建用户关系列表
 		chatGroup.GET("/:id", middleware.AuthMinddleware(), v1.BuildChatLIst)
 		chatGroup.GET("/list", middleware.AuthMinddleware(), v1.GetChatList)
-		chatGroup.GET("/wx", v1.WsHandler)
+		chatGroup.GET("/wx", middleware.AuthMinddleware(), v1.WsHandler)
 	}
 	return router
 }

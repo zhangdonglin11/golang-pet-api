@@ -108,13 +108,12 @@ func GetChatList(ctx *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param token header string false "Bearer Token" default(Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM)
-// @Param id path string false "目标用户id"
+// @Param id query string false "目标用户id"
+// @Param commentForm body forms.CommentForm true "评论表单"
 // @Success 200 {string} json{Code,Msg,Data}  "成功"
 // @Router /api/v1/chat/wx [get]
 func WsHandler(c *gin.Context) {
 	userId_f64 := c.GetFloat64("userId")
-	uid_string := strconv.Itoa(int(userId_f64))
-
 	targetId_string := c.Query("toUid")
 
 	conn, err := (&websocket.Upgrader{
@@ -125,8 +124,8 @@ func WsHandler(c *gin.Context) {
 		http.NotFound(c.Writer, c.Request)
 		return
 	}
-	id := createId(uid_string, targetId_string)
-	sendID := createId(targetId_string, uid_string)
+	id := createId(userId_f64, targetId_string)
+	sendID := createId(targetId_string, userId_f64)
 	// 创建一个用户实例
 	client := &Client{
 		ID:     id,
@@ -173,10 +172,12 @@ func (c *Client) Read(ctx *gin.Context) {
 			break
 		}
 
-		if sendMsg.Type == 1 { // 发送信息
-			r1, _ := global.RedisDb.Get(ctx, c.ID).Result()
-			r2, _ := global.RedisDb.Get(ctx, c.SendID).Result()
-			senderId, _, _ := resolveId(c.ID)
+		// 发送信息
+		if sendMsg.Type == 1 {
+			// 处理发送3条信息限制
+			var r1, r2 = "0", "0"
+			r1, _ = global.RedisDb.Get(ctx, c.ID).Result()
+			r2, _ = global.RedisDb.Get(ctx, c.SendID).Result()
 			if r1 >= "3" && r2 == "0" {
 				replyMsg := forms.ReplyMsg{
 					Code: e.WebsocketLimit,
@@ -190,58 +191,104 @@ func (c *Client) Read(ctx *gin.Context) {
 				global.RedisDb.Incr(ctx, c.ID)
 				_, _ = global.RedisDb.Expire(ctx, c.ID, time.Hour*24*30).Result()
 			}
-			//处理返回信息体
-			replyMsg := forms.ReplyMsg{
-				Form:    senderId,
-				Code:    e.WebsocketSuccessMessage,
-				Content: sendMsg.Content,
-				Media:   sendMsg.Media,
-				Type:    sendMsg.Type,
+
+			// 判断对方是否接收信息，拉黑的功能
+			var chatList model.ChatList
+			global.Db.Debug().Where("chat_id=?", c.SendID).First(&chatList)
+			if !chatList.IsReceiving {
+				replyMsg := &forms.ReplyMsg{
+					Code: e.WebsocketLimit,
+					Msg:  "被对方拉黑了",
+				}
+				msg, _ := json.Marshal(replyMsg)
+				_ = c.Socket.WriteMessage(websocket.TextMessage, msg)
+				continue
 			}
-			log.Println(c.ID, "：发送信息", replyMsg)
+
+			// 将信息保存数据库中
+			chatMessage := model.ChatMessage{
+				ChatId:  c.ID,
+				Media:   sendMsg.Media,
+				Content: sendMsg.Content,
+			}
+			global.Db.Create(&chatMessage)
+
+			//处理返回信息体 将信息广播
+			senderId, _, _ := resolveId(c.ID)
+			replyMsg := forms.ReplyMsg{
+				From:       senderId,
+				Code:       e.WebsocketSuccessMessage,
+				Type:       sendMsg.Type,
+				Id:         chatMessage.ID,
+				Media:      sendMsg.Media,
+				Content:    sendMsg.Content,
+				CreateTime: chatMessage.CreatedAt,
+			}
 			msg, _ := json.Marshal(&replyMsg)
 			Manager.Broadcast <- &Broadcast{
 				Client:  c,
 				Message: msg,
 			}
 		} else if sendMsg.Type == 2 { //拉取历史消息
-			//timeT, err := strconv.Atoi(sendMsg.Content) // 传送来时间
-			//if err != nil {
-			//	timeT = 999999999
-			//}
-			//results, _ := FindMany(conf.MongoDBName, c.SendID, c.ID, int64(timeT), 10)
-			//if len(results) > 10 {
-			//	results = results[:10]
-			//} else if len(results) == 0 {
-			//	replyMsg := ReplyMsg{
-			//		Code:    e.WebsocketEnd,
-			//		Content: "到底了",
-			//	}
-			//	msg, _ := json.Marshal(replyMsg)
-			//	_ = c.Socket.WriteMessage(websocket.TextMessage, msg)
-			//	continue
-			//}
-			//for _, result := range results {
-			//	replyMsg := ReplyMsg{
-			//		From:    result.From,
-			//		Content: fmt.Sprintf("%s", result.Msg),
-			//	}
-			//	msg, _ := json.Marshal(replyMsg)
-			//	_ = c.Socket.WriteMessage(websocket.TextMessage, msg)
-			//}
-		} else if sendMsg.Type == 3 {
-			//results, err := FirsFindtMsg(conf.MongoDBName, c.SendID, c.ID)
-			//if err != nil {
-			//	log.Println(err)
-			//}
-			//for _, result := range results {
-			//	replyMsg := ReplyMsg{
-			//		From:    result.From,
-			//		Content: fmt.Sprintf("%s", result.Msg),
-			//	}
-			//	msg, _ := json.Marshal(replyMsg)
-			//	_ = c.Socket.WriteMessage(websocket.TextMessage, msg)
-			//}
+			timeT, err := time.Parse(time.RFC3339Nano, sendMsg.Content) // 传送来时间
+			if err != nil {
+				timeT = time.Now()
+			}
+			// 查询聊天记录
+			results, _ := model.ChatMessage{}.FindManyChatMessages("1->3", "3->1", timeT, 10)
+			if len(results) > 10 {
+				results = results[:10]
+			} else if len(results) == 0 {
+				replyMsg := forms.ReplyMsg{
+					Code:    e.WebsocketEnd,
+					Content: "到底了",
+				}
+				msg, _ := json.Marshal(replyMsg)
+				_ = c.Socket.WriteMessage(websocket.TextMessage, msg)
+				continue
+			}
+			for _, result := range results {
+				id, _, _ := resolveId(result.ChatId)
+				replyMsg := forms.ReplyMsg{
+					From:       id,
+					Code:       e.WebsocketSuccessMessage,
+					Msg:        "请求成功！",
+					Type:       sendMsg.Type,
+					Id:         result.ID,
+					Media:      result.Media,
+					Content:    result.Content,
+					CreateTime: result.CreatedAt,
+				}
+				msg, _ := json.Marshal(replyMsg)
+				_ = c.Socket.WriteMessage(websocket.TextMessage, msg)
+			}
+		} else if sendMsg.Type == 3 { // 获取未读信息
+			timeT, err := time.Parse(time.RFC3339Nano, sendMsg.Content) // 传送来时间
+			unRead := 0                                                 //未读条数
+			if err != nil {
+				var chatList model.ChatList
+				global.Db.Debug().Where("chat_id=?", c.ID).First(&chatList)
+				unRead = chatList.UnRead
+			}
+			results, err := model.ChatMessage{}.QueryUnreadMessagesBeforeTime(c.ID, c.SendID, timeT, unRead)
+			if err != nil {
+				log.Println(err)
+			}
+			for _, result := range results {
+				id, _, _ := resolveId(result.ChatId)
+				replyMsg := forms.ReplyMsg{
+					From:       id,
+					Code:       e.WebsocketSuccessMessage,
+					Msg:        "请求成功",
+					Type:       sendMsg.Type,
+					Id:         result.ID,
+					Media:      result.Media,
+					Content:    result.Content,
+					CreateTime: result.CreatedAt,
+				}
+				msg, _ := json.Marshal(replyMsg)
+				_ = c.Socket.WriteMessage(websocket.TextMessage, msg)
+			}
 		}
 
 	}

@@ -101,9 +101,15 @@ paths:
         name: token
         type: string
       - description: 目标用户id
-        in: path
+        in: query
         name: id
         type: string
+      - description: 评论表单
+        in: body
+        name: commentForm
+        required: true
+        schema:
+          $ref: '#/definitions/forms.CommentForm'
       produces:
       - application/json
       responses:
