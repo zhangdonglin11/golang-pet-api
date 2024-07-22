@@ -1,0 +1,731 @@
+definitions:
+  forms.CommentForm:
+    properties:
+      content:
+        description: 内容
+        type: string
+      level:
+        description: 层级
+        enum:
+        - 0
+        - 1
+        - 2
+        type: integer
+      petId:
+        description: 宠物id
+        type: integer
+      rootId:
+        description: 根评论id
+        type: integer
+      targetId:
+        description: 目标用户id
+        type: integer
+    required:
+    - content
+    - petId
+    - targetId
+    type: object
+info:
+  contact: {}
+  description: Go 语言编程之旅：一起用 Go 做项目
+  termsOfService: https://github.com/zhangdonglin11/golang-pet-api
+  title: 宠物森林
+  version: "1.0"
+paths:
+  /api/v1/captcha:
+    get:
+      description: 获取一个基于数字和字母的图片验证码，并返回验证码的ID和Base64编码的图片数据。
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      summary: 获取图片验证码
+      tags:
+      - 认证模块
+  /api/v1/chat/{id}:
+    get:
+      description: 根据目标用户id建立聊天关系：[get] /api/v1/chat/:id
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      - description: 目标用户id
+        in: path
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建用户聊天关系
+      tags:
+      - 聊天模块
+  /api/v1/chat/list:
+    get:
+      description: 根据目标用户id建立聊天关系：[get] /api/v1/chat/:id
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户聊天列表
+      tags:
+      - 聊天模块
+  /api/v1/chat/wx:
+    get:
+      description: 使用postman或apifox等接口软件使用websocket进行接口测试，根据目标用户id建立聊天长连接：[ws] ws://127.0.0.1:8088/api/v1/chat/wx?uid=2
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      - description: 目标用户id
+        in: path
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 建立websocket连接
+      tags:
+      - 聊天模块
+  /api/v1/login:
+    post:
+      description: 用户名和密码登录
+      parameters:
+      - default: z1
+        description: 用户名
+        in: formData
+        maxLength: 50
+        minLength: 1
+        name: username
+        required: true
+        type: string
+      - default: "123456"
+        description: 用户密码
+        in: formData
+        maxLength: 16
+        minLength: 6
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      summary: 登录 用户/密码
+      tags:
+      - 认证模块
+  /api/v1/pet:
+    post:
+      description: 创建或修改宠物信息，宠物id为空则创建，不为空则修改。
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      - description: 宠物ID (为空则创建新宠物)
+        in: formData
+        name: petId
+        type: integer
+      - description: 宠物类型 (1:狗, 2:猫)
+        in: formData
+        name: petType
+        required: true
+        type: integer
+      - description: 宠物品种
+        in: formData
+        name: petBreeds
+        type: string
+      - description: 宠物昵称
+        in: formData
+        name: petNickname
+        type: string
+      - description: 宠物性别
+        in: formData
+        name: petGender
+        type: string
+      - description: 宠物年龄
+        in: formData
+        name: petAge
+        type: string
+      - description: 宠物地址
+        in: formData
+        name: petAddress
+        type: string
+      - description: 宠物状态
+        in: formData
+        name: petStatus
+        type: string
+      - description: 宠物经历
+        in: formData
+        name: petExperience
+        type: string
+      - collectionFormat: csv
+        description: 宠物头像链接数组
+        in: formData
+        items:
+          type: string
+        name: petAvatar
+        type: array
+      - description: 宠物介绍
+        in: formData
+        name: petIntro
+        type: string
+      - description: 状态 (1:草稿, 2:发布)
+        in: formData
+        name: status
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Code":0, "Msg":"成功", "Data":{}}
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建或修改宠物
+      tags:
+      - 宠物模块
+  /api/v1/pet/{petId}:
+    delete:
+      description: 根据宠物id删除宠物信息：[delete] /api/v1/pet/:petId
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      - description: 宠物id
+        in: path
+        name: petId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除宠物信息
+      tags:
+      - 宠物模块
+    get:
+      description: 根据宠物id获取宠物信息：[get] /api/v1/pet/:petId
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      - description: 宠物id
+        in: path
+        name: petId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 获取宠物详细信息
+      tags:
+      - 宠物模块
+  /api/v1/pet/childComment:
+    get:
+      consumes:
+      - application/json
+      description: 获取宠物评论的子评论
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      - description: 评论id
+        in: query
+        name: cid
+        required: true
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: 大小
+        in: query
+        name: pageSize
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功提交评论
+          schema:
+            type: string
+        "400":
+          description: 无效的请求参数
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 获取子评论
+      tags:
+      - 评论模块
+  /api/v1/pet/comment:
+    get:
+      consumes:
+      - application/json
+      description: 获取宠物的评论
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      - description: 宠物id
+        in: query
+        name: pid
+        required: true
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: 大小
+        in: query
+        name: pageSize
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功提交评论
+          schema:
+            type: string
+        "400":
+          description: 无效的请求参数
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 获取宠物的评论
+      tags:
+      - 评论模块
+  /api/v1/pet/comment/{cid}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除评论
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      - description: 评论id
+        in: path
+        name: cid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功提交评论
+          schema:
+            type: string
+        "400":
+          description: 无效的请求参数
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除评论
+      tags:
+      - 评论模块
+  /api/v1/pet/filter:
+    post:
+      description: 描述
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      - description: 1:狗|2:猫
+        in: formData
+        name: petType
+        type: integer
+      - description: 宠物地址
+        in: formData
+        name: petAddress
+        type: string
+      - description: 宠物社交状态
+        in: formData
+        name: petStatus
+        type: string
+      - description: 性别
+        in: formData
+        name: petGender
+        type: string
+      - description: 年龄
+        in: formData
+        name: petAge
+        type: string
+      - description: 查询第几页
+        in: formData
+        name: page
+        required: true
+        type: string
+      - description: 每页多少条数据
+        in: formData
+        name: pageSize
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 通过条件获取宠物列表
+      tags:
+      - 宠物模块
+  /api/v1/pet/myLike:
+    get:
+      description: 查询目标收藏的宠物列表；[get] /api/v1/pet/myLike?userId=,page=,pageSize=
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      - description: 目标用户id
+        in: query
+        name: userId
+        required: true
+        type: string
+      - description: 查询第几页
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: 每页多少条数据
+        in: query
+        name: pageSize
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 获取我的宠物收藏
+      tags:
+      - 宠物模块
+  /api/v1/pet/myPet:
+    get:
+      description: 查询目标收藏的宠物列表；[get] /api/v1/pet/myPet?userId=,page=,pageSize=
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      - description: 目标用户id
+        in: query
+        name: userId
+        required: true
+        type: string
+      - description: 查询第几页
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: 每页多少条数据
+        in: query
+        name: pageSize
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 获取我的宠物
+      tags:
+      - 宠物模块
+  /api/v1/pet/submitComment:
+    post:
+      consumes:
+      - application/json
+      description: 提交新的评论
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        type: string
+      - description: 评论表单
+        in: body
+        name: commentForm
+        required: true
+        schema:
+          $ref: '#/definitions/forms.CommentForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功提交评论
+          schema:
+            type: string
+        "400":
+          description: 无效的请求参数
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 提交评论
+      tags:
+      - 评论模块
+  /api/v1/register:
+    post:
+      description: 用户名和密码注册。
+      parameters:
+      - description: 用户名
+        in: formData
+        maxLength: 50
+        minLength: 1
+        name: username
+        required: true
+        type: string
+      - description: 用户密码
+        in: formData
+        maxLength: 16
+        minLength: 6
+        name: password
+        required: true
+        type: string
+      - description: 验证码
+        in: formData
+        name: captcha
+        required: true
+        type: string
+      - description: 图片验证码key
+        in: formData
+        name: captchaId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      summary: 注册 用户名/密码
+      tags:
+      - 认证模块
+  /api/v1/sms:
+    post:
+      description: 通过电话号码和类型获取短信验证码。
+      parameters:
+      - default: "13169197369"
+        description: 电话号码
+        format: phone
+        in: formData
+        name: mobile
+        required: true
+        type: string
+      - default: "1"
+        description: 类型
+        enum:
+        - "0"
+        - "1"
+        in: formData
+        name: type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      summary: 获取短信验证码
+      tags:
+      - 认证模块
+  /api/v1/upload:
+    post:
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 上传图片
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 上传图片+回显
+      tags:
+      - 上传图片模块
+  /api/v1/user:
+    get:
+      description: 通过请求头附带 Bearer Token 获取用户详细信息。
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户详细信息
+      tags:
+      - 用户模块
+    put:
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 昵称
+        in: formData
+        name: nickname
+        type: string
+      - description: 头像url
+        in: formData
+        name: icon
+        type: string
+      - description: 电话
+        in: formData
+        name: phone
+        type: string
+      - description: 邮箱
+        in: formData
+        name: email
+        type: string
+      - description: 性别
+        in: formData
+        name: gender
+        type: string
+      - description: 状态
+        in: formData
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 修改用户信息
+      tags:
+      - 用户模块
+  /api/v1/user/upload:
+    put:
+      parameters:
+      - default: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM
+        description: Bearer Token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 上传头像图片
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 上传用户头像
+      tags:
+      - 用户模块
+swagger: "2.0"

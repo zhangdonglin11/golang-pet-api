@@ -1,0 +1,1116 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Go 语言编程之旅：一起用 Go 做项目",
+        "title": "宠物森林",
+        "termsOfService": "https://github.com/zhangdonglin11/golang-pet-api",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/v1/captcha": {
+            "get": {
+                "description": "获取一个基于数字和字母的图片验证码，并返回验证码的ID和Base64编码的图片数据。",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "认证模块"
+                ],
+                "summary": "获取图片验证码",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/chat/list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "根据目标用户id建立聊天关系：[get] /api/v1/chat/:id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "聊天模块"
+                ],
+                "summary": "获取用户聊天列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/chat/wx": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "使用postman或apifox等接口软件使用websocket进行接口测试，根据目标用户id建立聊天长连接：[ws] ws://127.0.0.1:8088/api/v1/chat/wx?uid=2",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "聊天模块"
+                ],
+                "summary": "建立websocket连接",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "目标用户id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/chat/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "根据目标用户id建立聊天关系：[get] /api/v1/chat/:id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "聊天模块"
+                ],
+                "summary": "创建用户聊天关系",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "目标用户id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/login": {
+            "post": {
+                "description": "用户名和密码登录",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "认证模块"
+                ],
+                "summary": "登录 用户/密码",
+                "parameters": [
+                    {
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "type": "string",
+                        "default": "z1",
+                        "description": "用户名",
+                        "name": "username",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 16,
+                        "minLength": 6,
+                        "type": "string",
+                        "default": "123456",
+                        "description": "用户密码",
+                        "name": "password",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pet": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建或修改宠物信息，宠物id为空则创建，不为空则修改。",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "宠物模块"
+                ],
+                "summary": "创建或修改宠物",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "宠物ID (为空则创建新宠物)",
+                        "name": "petId",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "宠物类型 (1:狗, 2:猫)",
+                        "name": "petType",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物品种",
+                        "name": "petBreeds",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物昵称",
+                        "name": "petNickname",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物性别",
+                        "name": "petGender",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物年龄",
+                        "name": "petAge",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物地址",
+                        "name": "petAddress",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物状态",
+                        "name": "petStatus",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物经历",
+                        "name": "petExperience",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "宠物头像链接数组",
+                        "name": "petAvatar",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物介绍",
+                        "name": "petIntro",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "状态 (1:草稿, 2:发布)",
+                        "name": "status",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Code\":0, \"Msg\":\"成功\", \"Data\":{}}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pet/childComment": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取宠物评论的子评论",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "评论模块"
+                ],
+                "summary": "获取子评论",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "评论id",
+                        "name": "cid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "大小",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功提交评论",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "无效的请求参数",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pet/comment": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取宠物的评论",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "评论模块"
+                ],
+                "summary": "获取宠物的评论",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物id",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "大小",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功提交评论",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "无效的请求参数",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pet/comment/{cid}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "删除评论",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "评论模块"
+                ],
+                "summary": "删除评论",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "评论id",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功提交评论",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "无效的请求参数",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pet/filter": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "描述",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "宠物模块"
+                ],
+                "summary": "通过条件获取宠物列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "1:狗|2:猫",
+                        "name": "petType",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物地址",
+                        "name": "petAddress",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物社交状态",
+                        "name": "petStatus",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "性别",
+                        "name": "petGender",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "年龄",
+                        "name": "petAge",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "查询第几页",
+                        "name": "page",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "每页多少条数据",
+                        "name": "pageSize",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pet/myLike": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询目标收藏的宠物列表；[get] /api/v1/pet/myLike?userId=,page=,pageSize=",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "宠物模块"
+                ],
+                "summary": "获取我的宠物收藏",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "目标用户id",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "查询第几页",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "每页多少条数据",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pet/myPet": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询目标收藏的宠物列表；[get] /api/v1/pet/myPet?userId=,page=,pageSize=",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "宠物模块"
+                ],
+                "summary": "获取我的宠物",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "目标用户id",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "查询第几页",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "每页多少条数据",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pet/submitComment": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "提交新的评论",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "评论模块"
+                ],
+                "summary": "提交评论",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "description": "评论表单",
+                        "name": "commentForm",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.CommentForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功提交评论",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "无效的请求参数",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pet/{petId}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "根据宠物id获取宠物信息：[get] /api/v1/pet/:petId",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "宠物模块"
+                ],
+                "summary": "获取宠物详细信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物id",
+                        "name": "petId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "根据宠物id删除宠物信息：[delete] /api/v1/pet/:petId",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "宠物模块"
+                ],
+                "summary": "删除宠物信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "宠物id",
+                        "name": "petId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/register": {
+            "post": {
+                "description": "用户名和密码注册。",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "认证模块"
+                ],
+                "summary": "注册 用户名/密码",
+                "parameters": [
+                    {
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "username",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 16,
+                        "minLength": 6,
+                        "type": "string",
+                        "description": "用户密码",
+                        "name": "password",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "验证码",
+                        "name": "captcha",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "图片验证码key",
+                        "name": "captchaId",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/sms": {
+            "post": {
+                "description": "通过电话号码和类型获取短信验证码。",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "认证模块"
+                ],
+                "summary": "获取短信验证码",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "phone",
+                        "default": "13169197369",
+                        "description": "电话号码",
+                        "name": "mobile",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "0",
+                            "1"
+                        ],
+                        "type": "string",
+                        "default": "1",
+                        "description": "类型",
+                        "name": "type",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/upload": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "上传图片模块"
+                ],
+                "summary": "上传图片+回显",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "上传图片",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "通过请求头附带 Bearer Token 获取用户详细信息。",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户模块"
+                ],
+                "summary": "获取用户详细信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户模块"
+                ],
+                "summary": "修改用户信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "昵称",
+                        "name": "nickname",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "头像url",
+                        "name": "icon",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "电话",
+                        "name": "phone",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "邮箱",
+                        "name": "email",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "性别",
+                        "name": "gender",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "状态",
+                        "name": "status",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/upload": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户模块"
+                ],
+                "summary": "上传用户头像",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI3NTQxNzksImlhdCI6MTcyMTAyNjE3OSwicm9sZSI6MCwidXNlcklkIjoxfQ.7_QhxomXnG1TLwggvkij1UwJkaCxxFtldUEvzbWbHWM",
+                        "description": "Bearer Token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "上传头像图片",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "forms.CommentForm": {
+            "type": "object",
+            "required": [
+                "content",
+                "petId",
+                "targetId"
+            ],
+            "properties": {
+                "content": {
+                    "description": "内容",
+                    "type": "string"
+                },
+                "level": {
+                    "description": "层级",
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1,
+                        2
+                    ]
+                },
+                "petId": {
+                    "description": "宠物id",
+                    "type": "integer"
+                },
+                "rootId": {
+                    "description": "根评论id",
+                    "type": "integer"
+                },
+                "targetId": {
+                    "description": "目标用户id",
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

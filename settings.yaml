@@ -2,9 +2,9 @@
 server:
   address: 127.0.0.1:8088
   # debug模式
-#  model: debug
+  model: debug
   # release模式
-  model: release
+#  model: release
 
 # 数据库配置
 db:
@@ -24,14 +24,19 @@ db:
 # redis配置
 redis:
   address: 127.0.0.1:6379
-  password: 
+  password:
+
+#SMS阿里云短信配置
+sms:
+
 
 # 图片地址配置
 imageSettings:
   # 本地图片地址
-  uploadDir: /static/imageUtils/
+  uploadDir: /static/image/
   # 本地ip地址
   imageHost: http://localhost:8088
+
 
 # 系统信息
 system:
